@@ -1,13 +1,16 @@
 import { Box, Button, Card, Checkbox, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import { isAllSpace } from '../../utils/common'
 const label = { inputProps: { 'aria-label': 'Checkbox status' } }
 
 type Props = {
   itemEdit: Todo | null
   setData: React.Dispatch<React.SetStateAction<Todo[]>>
+  setItemEdit: React.Dispatch<React.SetStateAction<Todo | null>>
 }
 
-export default function InputTodo({ itemEdit, setData }: Props) {
+export default function InputTodo({ itemEdit, setItemEdit, setData }: Props) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [status, setStatus] = useState(false)
@@ -15,16 +18,28 @@ export default function InputTodo({ itemEdit, setData }: Props) {
     title: false,
     description: false,
   })
+  console.log('rebder input todo');
+
 
   useEffect(() => {
     if (itemEdit) {
+      //reset error
+      setError({ title: false, description: false })
       setTitle(itemEdit.title)
       setDescription(itemEdit.description)
       setStatus(itemEdit.status)
     }
   }, [itemEdit])
 
-  const handleSubmit = () => {
+  const resetForm = () => {
+    setTitle('')
+    setDescription('')
+    setError({ title: false, description: false })
+    setStatus(false)
+    setItemEdit(null)
+  }
+
+  const validateForm = () => {
     const error = {
       title: false,
       description: false,
@@ -35,11 +50,61 @@ export default function InputTodo({ itemEdit, setData }: Props) {
     if (!description) {
       error.description = true
     }
+
     if (Object.values(error).includes(true)) {
       setError(error)
-      return
+      return false
     }
-    console.log(title, description)
+
+    if (isAllSpace(title) || isAllSpace(description)) {
+      toast.error('Please enter valid value', {
+        toastId: 'error-validate',
+      })
+      setError({ title: isAllSpace(title), description: isAllSpace(description) })
+      return false
+    }
+    return true
+  }
+
+  const handleSubmit = () => {
+    const checkForm = validateForm()
+    if (!checkForm) return
+    const newTodo: Todo = {
+      id: new Date().toISOString().toString(),
+      title: title.trim(),
+      description: description.trim(),
+      status: false,
+    }
+    setData(data => {
+      localStorage.setItem('listTodo', JSON.stringify([...data, newTodo]))
+      return [...data, newTodo]
+    })
+    resetForm()
+    toast.success('Add todo successfully', {
+      toastId: 'todo-added',
+    })
+  }
+
+  const handleUpdateTodo = (itemEdit: Todo) => {
+    const checkForm = validateForm()
+    if (!checkForm) return
+    setData(prev => {
+      const newData = prev.map(item =>
+        item.id === itemEdit.id
+          ? { ...item, title: title.trim(), description: description.trim(), status }
+          : item
+      )
+      localStorage.setItem('listTodo', JSON.stringify(newData))
+      return newData
+    })
+    resetForm()
+    toast.success('Update todo successfully', {
+      toastId: 'todo-updated',
+    })
+  }
+
+  const handleCancel = () => {
+    resetForm()
   }
   return (
     <Card
@@ -107,10 +172,10 @@ export default function InputTodo({ itemEdit, setData }: Props) {
                 gap: '10px',
               }}
             >
-              <Button fullWidth variant='contained'>
+              <Button fullWidth variant='contained' onClick={() => handleUpdateTodo(itemEdit)}>
                 Save
               </Button>
-              <Button fullWidth variant='contained'>
+              <Button fullWidth variant='contained' onClick={() => handleCancel()}>
                 Cancel
               </Button>
             </Box>
