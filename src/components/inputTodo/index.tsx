@@ -111,7 +111,7 @@ export default function InputTodo({ itemEdit, setItemEdit, setData }: Props) {
       sx={{
         width: {
           xs: '90%',
-          sm: '70%',
+          sm: '80%',
           md: '60%',
           lg: '50%',
           xl: '40%',
