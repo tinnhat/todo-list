@@ -4,25 +4,17 @@ import React from 'react'
 import InputTodo from '../inputTodo'
 import ListTodo from '../listTodo'
 
-type Props = {
-}
-
 const listTodoStorage = JSON.parse(localStorage.getItem('listTodo')!)
 
 // eslint-disable-next-line no-empty-pattern
-export default function Todos({}: Props) {
+export default function Todos() {
   const [data, setData] = React.useState<Todo[]>(listTodoStorage || [])
   const [itemEdit,setItemEdit] = React.useState<Todo | null>(null)
-  console.log('rebder parent todo');
-  
+
   return (
     <Container
       maxWidth={false}
-      sx={{
-        backgroundColor: '#54a0ff',
-        width: '100%',
-        height: '100vh',
-      }}
+      sx={{ backgroundColor: '#54a0ff', width: '100%', height: '100vh' }}
     >
       <Box
         sx={{
@@ -34,7 +26,10 @@ export default function Todos({}: Props) {
           overflow: 'hidden',
         }}
       >
-        <Typography sx={{ textAlign: 'center', mb: 4, fontWeight: 'bold', color: '#fff' }} variant='h4'>
+        <Typography 
+          sx={{ textAlign: 'center', mb: 4, fontWeight: 'bold', color: '#fff' }} 
+          variant='h4'
+        >
           To do list
         </Typography>
         <InputTodo itemEdit={itemEdit} setItemEdit={setItemEdit} setData={setData}  />
