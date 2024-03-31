@@ -14,12 +14,7 @@ export default function InputTodo({ itemEdit, setItemEdit, setData }: Props) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [status, setStatus] = useState(false)
-  const [error, setError] = useState({
-    title: false,
-    description: false,
-  })
-  console.log('rebder input todo');
-
+  const [error, setError] = useState({ title: false, description: false })
 
   useEffect(() => {
     if (itemEdit) {
@@ -40,26 +35,16 @@ export default function InputTodo({ itemEdit, setItemEdit, setData }: Props) {
   }
 
   const validateForm = () => {
-    const error = {
-      title: false,
-      description: false,
-    }
-    if (!title) {
-      error.title = true
-    }
-    if (!description) {
-      error.description = true
-    }
-
+    const error = { title: false, description: false }
+    if (!title) error.title = true
+    if (!description) error.description = true
     if (Object.values(error).includes(true)) {
       setError(error)
       return false
     }
 
     if (isAllSpace(title) || isAllSpace(description)) {
-      toast.error('Please enter valid value', {
-        toastId: 'error-validate',
-      })
+      toast.error('Please enter valid value', { toastId: 'error-validate'})
       setError({ title: isAllSpace(title), description: isAllSpace(description) })
       return false
     }
@@ -80,36 +65,27 @@ export default function InputTodo({ itemEdit, setItemEdit, setData }: Props) {
       return [...data, newTodo]
     })
     resetForm()
-    toast.success('Add todo successfully', {
-      toastId: 'todo-added',
-    })
+    toast.success('Add todo successfully', { toastId: 'todo-added' })
   }
 
   const handleUpdateTodo = (itemEdit: Todo) => {
     const checkForm = validateForm()
     if (!checkForm) return
     setData(prev => {
-      const newData = prev.map(item =>
-        item.id === itemEdit.id
-          ? { ...item, title: title.trim(), description: description.trim(), status }
-          : item
+      const newData = prev.map(item => item.id === itemEdit.id
+        ? { ...item, title: title.trim(), description: description.trim(), status }
+        : item
       )
       localStorage.setItem('listTodo', JSON.stringify(newData))
       return newData
     })
     resetForm()
-    toast.success('Update todo successfully', {
-      toastId: 'todo-updated',
-    })
+    toast.success('Update todo successfully', { toastId: 'todo-updated' })
   }
 
-  const handleCancel = () => {
-    resetForm()
-  }
   return (
     <Card
-      sx={{
-        width: {
+      sx={{ width: {
           xs: '90%',
           sm: '80%',
           md: '60%',
@@ -119,27 +95,13 @@ export default function InputTodo({ itemEdit, setItemEdit, setData }: Props) {
         padding: '20px',
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-        }}
-      >
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {itemEdit ? (
           <>
-            <Box
-              sx={{
-                display: 'flex',
-              }}
-            >
+            <Box sx={{ display: 'flex' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <Checkbox
-                  sx={{
-                    '&.Mui-checked': {
-                      color: 'green',
-                    },
-                  }}
+                  sx={{ '&.Mui-checked': { color: 'green' }}}
                   {...label}
                   checked={status}
                   onChange={() => setStatus(!status)}
@@ -166,16 +128,11 @@ export default function InputTodo({ itemEdit, setItemEdit, setData }: Props) {
               error={error.description ? true : false}
               helperText={error.description ? 'Description is required' : ''}
             />
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '10px',
-              }}
-            >
+            <Box sx={{ display: 'flex', gap: '10px' }}>
               <Button fullWidth variant='contained' onClick={() => handleUpdateTodo(itemEdit)}>
                 Save
               </Button>
-              <Button fullWidth variant='contained' onClick={() => handleCancel()}>
+              <Button fullWidth variant='contained' onClick={resetForm}>
                 Cancel
               </Button>
             </Box>

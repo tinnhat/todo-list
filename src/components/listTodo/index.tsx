@@ -49,6 +49,7 @@ export default function ListTodo({ data, setData, setItemEdit }: Props) {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
+  
   const dataFilter = useMemo(() => {
     if (status === null) return data
     return data.filter((item: Todo) => {
@@ -76,10 +77,9 @@ export default function ListTodo({ data, setData, setItemEdit }: Props) {
       localStorage.setItem('listTodo', JSON.stringify(newData))
       return newData
     })
-    toast.success('Delete todo successfully', {
-      toastId: 'todo-deleted',
-    })
+    toast.success('Delete todo successfully', { toastId: 'todo-deleted' })
   }
+
   const handleChangeStatus = (item: Todo) => {
     setData(prev => {
       const newData = prev.map((val: Todo) => {
@@ -92,7 +92,6 @@ export default function ListTodo({ data, setData, setItemEdit }: Props) {
   }
 
   const handleDragStart = (event: any) => {
-    console.log('start', event)
     const item = data.find(item => item.id === event.active.id)
     if (item) setActiveDragElement(item)
   }
@@ -152,7 +151,8 @@ export default function ListTodo({ data, setData, setItemEdit }: Props) {
         }}
         key={key}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        {/* checkbox */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px', width: '10%' }}>
           <Checkbox
             sx={{
               '&.Mui-checked': {
@@ -164,7 +164,8 @@ export default function ListTodo({ data, setData, setItemEdit }: Props) {
             onClick={() => handleChangeStatus(item)}
           />
         </Box>
-        <Box>
+        {/* title & description */}
+        <Box sx={{ width: '70%', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           <Tooltip title={item.title}>
             <Typography sx={styledTextLong} variant='h6'>
               {item.title}
@@ -175,7 +176,17 @@ export default function ListTodo({ data, setData, setItemEdit }: Props) {
             <Typography sx={styledTextLong}>{item.description}</Typography>
           </Tooltip>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px', ml: 'auto' }}>
+        {/* edit & delete */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            ml: 'auto',
+            width: '20%',
+            justifyContent: 'flex-end',
+          }}
+        >
           <EditIcon
             sx={{
               fontSize: '34px',
@@ -241,25 +252,19 @@ export default function ListTodo({ data, setData, setItemEdit }: Props) {
           >
             <MenuItem
               onClick={handleFilterAll}
-              sx={{
-                color: status === null ? 'green' : 'black',
-              }}
+              sx={{ color: status === null ? 'green' : 'black' }}
             >
               All
             </MenuItem>
             <MenuItem
               onClick={() => handleFilter(false)}
-              sx={{
-                color: status === false ? 'green' : 'black',
-              }}
+              sx={{ color: status === false ? 'green' : 'black' }}
             >
               Pending
             </MenuItem>
             <MenuItem
               onClick={() => handleFilter(true)}
-              sx={{
-                color: status === true ? 'green' : 'black',
-              }}
+              sx={{ color: status === true ? 'green' : 'black' }}
             >
               Complete
             </MenuItem>
@@ -275,6 +280,7 @@ export default function ListTodo({ data, setData, setItemEdit }: Props) {
           scrollbarWidth: 'thin',
         }}
       >
+        {/* container for drag and drop */}
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -305,25 +311,29 @@ export default function ListTodo({ data, setData, setItemEdit }: Props) {
                 }}
                 key={activeDragElement.id}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px', width: '10%' }}>
                   <Checkbox
-                    sx={{
-                      '&.Mui-checked': {
-                        color: 'green',
-                      },
-                    }}
+                    sx={{ '&.Mui-checked': { color: 'green' }}}
                     {...label}
                     checked={activeDragElement.status}
                   />
                 </Box>
-                <Box>
+                <Box sx={{ width: '70%', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   <Typography sx={styledTextLong} variant='h6'>
                     {activeDragElement.title}
                   </Typography>
-
                   <Typography sx={styledTextLong}>{activeDragElement.description}</Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px', ml: 'auto' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    ml: 'auto',
+                    width: '20%',
+                    justifyContent: 'flex-end',
+                  }}
+                >
                   <EditIcon
                     sx={{
                       fontSize: '34px',
