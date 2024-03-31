@@ -1,6 +1,6 @@
 # Todo App
 # Deploy
-- 
+- [https://todo-list-two-rho-34.vercel.app/](https://todo-list-two-rho-34.vercel.app/)
 ## Reference UI: 
 - [https://mui.com/material-ui/] (https://mui.com/material-ui/)
 - [https://dndkit.com/](https://dndkit.com/)
@@ -14,6 +14,8 @@
 + Update task to complete
 + Delete task
 + Support Responsive
++ Drag and Drop for order of todo
++ Save data in local storage , not lost when page refresh
 ## Usage
 Run in local.
 ```bash
